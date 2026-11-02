@@ -1,0 +1,37 @@
+name: Publicar na Locaweb (FTP)
+
+# A cada push na branch main, envia o site para a hospedagem da Locaweb.
+# Requer o segredo FTP_PASSWORD em Settings > Secrets and variables > Actions.
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+concurrency:
+  group: "locaweb"
+  cancel-in-progress: false
+
+jobs:
+  ftp:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Separar só os arquivos do site
+        run: |
+          mkdir -p _publicar
+          rsync -a ./ _publicar/ \
+            --exclude '.git*' --exclude '.github' --exclude '_publicar' \
+            --exclude 'README.md' --exclude 'CNAME' --exclude '.nojekyll'
+          ls -la _publicar
+
+      - name: Enviar por FTP para a Locaweb
+        uses: locaweb/ftp-deploy@1.0.0
+        with:
+          host: ftp.podaazul.com.br
+          user: podaazul1
+          password: ${{ secrets.FTP_PASSWORD }}
+          localDir: "_publicar"
+          remoteDir: "public_html"
