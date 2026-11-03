@@ -21,7 +21,7 @@
         'Serviço: ' + v('servico')
       ];
       if (v('mensagem')) linhas.push('Detalhes: ' + v('mensagem'));
-      var url = 'https://wa.me/5522992194367?text=' + encodeURIComponent(linhas.join('\n'));
+      var url = 'https://wa.me/5522998273193?text=' + encodeURIComponent(linhas.join('\n'));
       window.open(url, '_blank', 'noopener');
     });
   }
